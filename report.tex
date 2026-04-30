@@ -1,0 +1,173 @@
+\documentclass[12pt,twoside]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Definitions for the title page
+% Edit these to provide the correct information
+% e.g. \newcommand{\reportauthor}{Timothy Kimber}
+
+\newcommand{\reporttitle}{Title of the project}
+\newcommand{\reportauthor}{Marc Tomàs Moncunill}
+\newcommand{\supervisor}{Dr Néstor Sánchez Martínez}
+\newcommand{\accsupervisor}{Tutor Acadèmic}
+\newcommand{\institution}{Statistics, Epidemiology, and Public Health Group.
+Dpt. Of Medicine. School of Medicine and Health Sciences. International University of Catalonia}
+\newcommand{\degreetype}{Master's Degree in Omic data analysis}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% load some definitions and default packages
+\input{includes}
+
+% load some macros
+\input{notation}
+
+\date{June 2024}
+
+\begin{document}
+
+% load title page
+\input{titlepage}
+
+
+% page numbering etc.
+\pagenumbering{roman}
+\clearpage{\pagestyle{empty}\cleardoublepage}
+\setcounter{page}{1}
+\pagestyle{fancy}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{abstract}
+How do I write a great abstract? Well, \href{https://www.aje.com/arc/make-great-first-impression-6-tips-writing-strong-abstract/?utm_term=&utm_campaign=AJE_Digital_Prosp_Display_EN&utm_source=adwords&utm_medium=ppc&hsa_acc=3768250728&hsa_cam=20934774130&hsa_grp=&hsa_ad=&hsa_src=x&hsa_tgt=&hsa_kw=&hsa_mt=&hsa_net=adwords&hsa_ver=3&gad_source=1&gclid=Cj0KCQjwncWvBhD_ARIsAEb2HW8VmH5upvCl-7VY_ZjuMa-adcPmbd3JwVzV3cyFXgkIjFxoJpRIYhoaAnutEALw_wcB}{here} you will find some useful tips.
+
+\end{abstract}
+
+\clearpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Acknowledgments}
+Comment this out if not needed.
+
+\clearpage{\pagestyle{empty}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%--- table of contents
+\fancyhead[RE,LO]{\sffamily {Table of Contents}}
+\tableofcontents 
+\clearpage{\pagestyle{empty}}
+\pagenumbering{arabic}
+\setcounter{page}{1}
+\fancyhead[LE,RO]{\slshape \rightmark}
+\fancyhead[LO,RE]{\slshape \leftmark}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+
+Les infeccions del lloc quirúrgic (Surgical Site Infections, SSI) constitueixen una de les complicacions més freqüents dins de les infeccions associades a l’assistència sanitària (Healthcare-Associated Infections, HAI), contribuint de manera significativa a la morbiditat dels pacients, a l’increment de les estades hospitalàries i, conseqüentment, a un augment dels costos sanitaris \cite{1_intro_morbidity}. Des d’un punt de vista clínic, les SSI es classifiquen habitualment en infeccions superficials, profundes i d’òrgan/ espai, en funció del grau d’afectació dels teixits, fet que condiciona tant la seva gravetat com la dificultat en la seva identificació i maneig.
+
+La vigilància de les HAI és reconeguda per l’Organització Mundial de la Salut com un pilar fonamental per a la millora dels programes de prevenció i control d’infeccions (IPC), facilitant la implementació de pràctiques preventives i l’avaluació del seu impacte \cite{2_intro_prevention}. En aquest sentit, diversos estudis han demostrat que la participació en programes estructurats de vigilància de SSI s’associa amb una reducció progressiva del risc de desenvolupar aquestes infeccions al llarg del temps \cite{3_intro_decrease_risk}.
+
+Tradicionalment, la vigilància de les SSI en els centres sanitaris s’ha basat en processos manuals realitzats per professionals especialitzats en IPC, que revisen de manera sistemàtica les dades clíniques dels pacients sotmesos a determinades intervencions quirúrgiques per determinar la presència d’infecció \cite{4_intro_manual_diagnosis}. Aquest enfocament, tot i ser considerat el referent, és altament laboriós, consumeix una gran quantitat de temps i recursos, i presenta limitacions en termes d’escalabilitat.
+
+En el context actual, caracteritzat per l’augment exponencial de la disponibilitat de dades clíniques electròniques, ha emergit un interès creixent en la transició cap a sistemes de vigilància automatitzats o semi-automatitzats de les SSI \cite{5_automated_surveillance,13_prognostic_model_SSI,16_ai_models_review}. Aquesta evolució ha donat lloc a múltiples estudis que exploren l’ús d’algoritmes basats en regles i tècniques d’intel·ligència artificial, especialment models de machine learning, per a la identificació de casos \cite{16_ai_models_review,20_rule_based_models,21_semi_automated_surveillance}. Algunes d’aquestes aproximacions han mostrat un bon rendiment en termes de classificació \cite{22_automated_detection_SSI,23_automated_detection_SSI,24_predictive_model_SSI}, tot i que en molts casos la seva validesa externa és limitada \cite{25_intro_external_validation}. Paral·lelament, s’han desenvolupat estratègies semi-automatitzades orientades a reduir la càrrega de treball dels professionals, centrant la revisió manual en els casos amb major risc \cite{20_rule_based_models,21_semi_automated_surveillance,26_intro_semi_automated_review}. Aquestes aproximacions híbrides es perfilen com especialment prometedores per a la seva implementació en entorns clínics reals. No obstant això, les evidències disponibles que comparen de manera directa els diferents enfocaments metodològics continuen sent limitades en el context específic de les SSI \cite{26_intro_semi_automated_review}.
+
+En la vigilància de les SSI, es molt important diferenciar entre un enfocament orientat a la detecció retrospectiva i un enfocament que es cenri amb la predició del risc. Els primers, tenen com objectiu localitzar els casos amb infecció un cop ja s'ha desenvolupat, amb una finalitat epidemiològica o monitoratge. Mentre que els segons busquen anticipar la probabilitat d'infecció partint de les variables de les que disposen en la primera fase del procés assistencial. Això fà que tinguem unes diferències importants pel que fà a l'enfocament i a la presa de decicions que van des de les dades i la seva naturales fins a la utilitat clñinica dels models. 
+
+Si ho portem a un punt de vista més metodològic, aquets enfocament tenen aventatges i desaventatges. Per exemple models que es basen en regles es certt que presenten una gran interpreabilitat i transparència, facilitant una acceptació en entorns clínics, però tenen limitacions, com en la seva capacitat de trobar relacions no lineals o interaccions complexes entre les variables. Per altra banda, models de machine learning (ML), com per exemple els Random Forest (RF) modelant aquestes relacions amb molta més flexibilitat i inclus robustesa davant del soroll que puguin presentar les dades. Si anem un pas més enllà, trobem els models de deep learning(DL)com ho den ser les xarxes neurnals denses (DNN), vrindant una capacitat molt notòria en la captura de patrons altament complexos i no linials, encara que per contra requereixin un volum major de dades i a l'hora també aquest augment de complexitats fa que aquets models també donguin lloc a un repte en temes d'interprtabilitat. Per això es molt important estudiar aquesta comparativa entre els diferents enfocaments i així poder arribar a un equilibri que ens permetri trobar un òptim rendiment sense perdre aplicabilitat clínica.
+
+En coherència amb aquest plantejament, en aquest treball s’utilitzen tres aproximacions representatives: Quadratic Discriminant Analysis (QDA), com a model estadístic clàssic que assumeix distribucions específiques de les dades i serveix com a referència interpretativa; Random Forest (RF), com a mètode d’ensemble robust capaç de capturar relacions no lineals i interaccions complexes; i xarxes neuronals denses (DNN), com a aproximació flexible amb alt potencial per modelar patrons complexos.
+
+Seguint aquesta línia de plantejament, en aquest treball sintentarà utilitzar tres aproximacions representatives: Quadratic Discriminant Analysis (QDA), sent un model estadístic clàssic on s'assumeixen distrivusions específiques de les dades i es un molt bon referent de cara a la interpretació i comparaci'entre els mdels; RF, com he esmentat avans aquest es el primer model basant en ML que ens permet començar a relacionar les dades no lineals i observar també les interaccions complexes entre les variables; finalment, les DNN sent l'aproximació més flexible de totes i amb un gran potencial per a trobar aquells patrons més complexos entre els grans paquets de dades. 
+
+La cirurgia traumatològica constitueix un context especialment rellevant per a l’estudi de les SSI. Aquesta especialitat se centra en el diagnòstic i tractament de lesions de l’aparell locomotor, incloent ossos, articulacions, lligaments, músculs i tendons. A causa de la complexitat tècnica de moltes d’aquestes intervencions i de la manipulació de teixits profunds, aquestes cirurgies presenten una susceptibilitat elevada a complicacions infeccioses \cite{intro_epidemiology_fractures}.
+
+En comparació amb altres especialitats quirúrgiques, la cirurgia traumatològica presenta factors de risc específics per al desenvolupament de SSI. Entre aquests destaquen la presència freqüent d’implants o pròtesis, que poden afavorir la formació de biofilms bacterians \cite{intro_implant_infections}, així com el fet que moltes intervencions es realitzen en context d’urgència, amb menys control sobre les condicions òptimes d’esterilitat. A més, factors relacionats amb el pacient, com les comorbiditats o la gravetat de la lesió inicial, poden contribuir addicionalment al risc d’infecció. En conjunt, aquests elements fan que la cirurgia traumatològica sigui especialment propensa a patir SSI i justifiquen l’interès en desenvolupar models específics en aquest àmbit \cite{intro_ssi_costs_orthotrauma,intro_ssi_risk_factors}.
+
+Finalment, aquesta inplementació dels models prediutius basats en dades clíniques pot arribara plantejar un conjunt de consideracions ètiques i rwguladores. En primer lloc, la quantitat i qualitat d'aquestes dades poden arribar a introduir biaixos que afectin el renimdent dels models utilitzats per as diferents subgrups de pacients, donant lloc a implicacions en termes d'equitat. En segon lloc, una limitada interpretabilitat que presenten alguns models, podrien fer difícil l'acceptació entre els professionals clínics i ens presenta dubes sobre la hipotètica responsabilitat en la presa de decisions.
+
+Si ens movem a una presepectiva mś reguladora, observem que aquestes metodologies s'enmarquen en la categoria de dipositius mèdics basats en programari. Implicant  el complment de requisits de validació i monitoratge, al igual que la validació externa i l'avaluació dels entrons on esdevenen essencials amb l'objectiu degarantir la seguretat i eficàcia dels sistemes. A la vegada, aquesta integració hauria de garantir l'equilibri entre la supervisió humana i la automatització dels sistemes, d'aquesta manera es podrien assegurar que els sistemes actuïn com a les eines de suport que son i no substitueixin el pensament crític i el seu judici professional. 
+
+
+
+\clearpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Hypothesis and Objectives}
+
+This work, when approached from an interpretative perspective, is not intended merely to identify or, in a certain sense, predict infections; rather, it aims to develop a decision-making framework structured across three principal levels: a probabilistic estimation, a clear definition of thresholds, and, ultimately, a meaningful impact on clinical practice. In this way, the following objective can be formulated:
+
+\begin{itemize}
+    \item To evaluate and compare the performance of different methodological approaches (namely classical statistical models, Machine Learning models, and Deep Learning models) focused on the retrospective surveillance of surgical site infections in trauma surgery, with the aim of determining the capacity of these models to support an efficient triage system while maintaining high sensitivity levels and thereby reducing the burden of manual review.
+\end{itemize}
+
+From this main objective, several specific objectives can be derived, corresponding to the different analytical components:
+
+\begin{itemize}
+    \item To compare the performance and development of predictive models (QDA, RF, and DNN) in terms of sensitivity, AUPRC, and other metrics considered relevant within the context of our data.
+    \item To analyze and study the impact of decision-threshold selection in relation to the clinical behavior exhibited by the different models, attempting to maintain a high sensitivity threshold (=90\%) as a reference for clinical safety.
+    \item To assess the potential reduction in workload for healthcare professionals enabled by the different model developments studied.
+    \item To carry out a more focused comparison of advanced ML and DL models in order to identify real gains in effectiveness within clinical environments.
+    \item To analyze the interpretability of these advanced models using methods such as SHAP, thereby establishing clinical coherence for the set of variables and their potential in healthcare settings.
+    \item To explore the reliability and robustness of the models in light of common limitations in clinical data, such as imbalance, high dimensionality, or the risk of overfitting.
+\end{itemize}
+
+These objectives clearly orient the work toward a transition from purely technical evaluation to an analysis centered on future real-world clinical implementation. This leads to the formulation of the following general and specific hypotheses:
+
+\begin{itemize}
+    \item General hypothesis: Machine Learning and Deep Learning models offer improved performance in terms of overall discriminative capacity compared to classical statistical models (QDA), but require optimization of the decision threshold to achieve the sensitivity levels necessary in a clinical context.
+    \item Specific hypothesis 1: Adjusting the classification threshold will allow ML and DL models to achieve sensitivity levels above 90%.
+    \item Specific hypothesis 2: The QDA model will provide a better balance between interpretability and clinical performance, acting as an intermediate point between simpler and more complex models.
+    \item Specific hypothesis 3: More complex models will be capable of capturing and representing complex interactions, but will exhibit vulnerability to overfitting in limited datasets.
+    \item Specific hypothesis 4: The Random Forest model will demonstrate strong robustness to noise and outliers, but with a tendency toward metric optimization that may reduce sensitivity.
+    \item Specific hypothesis 5: Rule-based models will be able to achieve very high sensitivity, but will be less effective in reducing workload.
+    \item Specific hypothesis 6: The use of interpretability techniques such as SHAP will enable the visualization of clinical patterns, thereby enhancing trust in the outputs of more complex models.
+\end{itemize}
+
+
+
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Methods}
+
+In this
+
+
+section you will explain in deep detail (to make it easier for others to independently reproduce your work) the different methods you are going to use to try developing your objectives in the previous section.
+
+
+\clearpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Results}
+
+In an ordered way, explain the results you have obtained here. This should include a collection of figures, tables, schemas, etc that support the claims that you are obtainig such results. The captions of your figures and tables are as important as the text, and they need to explain "the story" you want to use to demonstrate the claims you do in the project.
+
+
+
+\clearpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Discussion}
+
+Now it is time to put everything together ad to describe how well your results explain your hypothesis through the fullfilling of your objectives. Although everybody likes explaining successful stories, it is equally valid to explian how the project did not succeed in its objectives or in demonstratying its hypothesis as a whole. All comes with the extra perk of opening new questions and facilitating the development of new good research.
+
+
+\clearpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusions}
+
+This section can be merged with the preious one, eventually, and summarizes the main findings of the article.
+
+
+\clearpage
+\section{References}
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\clearpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Annexes}
+\subsection{Annex 1}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}
